@@ -2,9 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const showdown = require('showdown');
 const yaml = require('js-yaml');
-const format = require('html-format');
 
-const converter = new showdown.Converter();
+const converter = new showdown.Converter({ noHeaderId: true });
 
 const template = fs.readFileSync('faq/.template.html', 'utf8');
 
@@ -46,16 +45,8 @@ files.forEach(file => {
       console.error(`Invalid content in ${file}: missing markdown`);
       return;
     }
-    const htmlContent = converter.makeHtml(markdown).replace(
-      /<h([1-6])(\s+id(?:="([^"]*)")?)?\s*>/g,
-      (match, level, idAttr, idValue = '') => (
-        idAttr && idValue.trim() !== '' ? `<h${level} id="${idValue}">` : `<h${level}>`
-      )
-    );
-    const formattedHtmlContent = format(htmlContent, "  ")
-      // html-format may split <a> tags; normalize before minifying.
-      .replace(/<a\s+href=/g, '<a href=')
-      .replace(/^/gm, "  ");
+    const htmlContent = converter.makeHtml(markdown);
+    const formattedHtmlContent = htmlContent.replace(/^/gm, "  ");
     const finalHtml = template
       .replace('<h2>テンプレート</h2>\n', '')
       .replace('<meta property="og:description" content="テンプレート">', `<meta property="og:description" content="${meta.description}">`)
