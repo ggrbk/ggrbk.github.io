@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "build": "npm run build:family && npm run build:faq",
+    "build:family": "node workflows/scripts/gen-family.js",
+    "build:faq": "node workflows/scripts/gen-faq.js"
+  },
   "dependencies": {
     "html-format": "^1.1.7",
     "js-yaml": "^4.1.0",
