@@ -46,7 +46,12 @@ files.forEach(file => {
       console.error(`Invalid content in ${file}: missing markdown`);
       return;
     }
-    const htmlContent = converter.makeHtml(markdown).replace(/<h([1-6])\s+id(?:="\s*")?\s*>/g, '<h$1>');
+    const htmlContent = converter.makeHtml(markdown).replace(
+      /<h([1-6])\s+id(?:="([^"]*)")?\s*>/g,
+      (match, level, idValue = '') => (
+        idValue.trim() === '' ? `<h${level}>` : `<h${level} id="${idValue}">`
+      )
+    );
     const formattedHtmlContent = format(htmlContent, "  ")
       .replace(/<a\s+href=/g, '<a href=')
       .replace(/^/gm, "  ");
