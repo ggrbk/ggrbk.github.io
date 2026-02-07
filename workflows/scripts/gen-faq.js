@@ -8,10 +8,10 @@ const converter = new showdown.Converter();
 
 const template = fs.readFileSync('faq/.template.html', 'utf8');
 
-const faqDir = 'faq';
-const outputDir = path.join('docs', faqDir);
+const faqSourceDir = 'faq';
+const outputDir = path.join('docs', faqSourceDir);
 fs.mkdirSync(outputDir, { recursive: true });
-const files = fs.readdirSync(faqDir);
+const files = fs.readdirSync(faqSourceDir);
 
 let listHtml = `\
 <!DOCTYPE html>
@@ -34,7 +34,7 @@ let listHtml = `\
 
 files.forEach(file => {
   if (path.extname(file) === '.md') {
-    const filePath = path.join(faqDir, file);
+    const filePath = path.join(faqSourceDir, file);
     const content = fs.readFileSync(filePath, 'utf8');
     const [metadata, markdown] = content.split('---\n').slice(1);
     const meta = yaml.load(metadata);
@@ -47,7 +47,9 @@ files.forEach(file => {
       return;
     }
     const htmlContent = converter.makeHtml(markdown);
-    const formattedHtmlContent = format(htmlContent, "  ").replace(/^/gm, "  ");
+    const formattedHtmlContent = format(htmlContent, "  ")
+      .replace(/<a\s+href/g, '<a href')
+      .replace(/^/gm, "  ");
     const finalHtml = template
       .replace('<h2>テンプレート</h2>\n', '')
       .replace('<meta property="og:description" content="テンプレート">', `<meta property="og:description" content="${meta.description}">`)
