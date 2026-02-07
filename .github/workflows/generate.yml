@@ -7,8 +7,9 @@ on:
       - '.github/workflows/generate.yml'
       - 'workflows/scripts/gen-family.js'
       - 'workflows/scripts/gen-faq.js'
+      - '.template.html'
+      - 'family.template.html'
       - 'family.yaml'
-      - 'family.html'
       - 'faq/**/*.md'
       - 'faq/.template.html'
   pull_request:
@@ -16,8 +17,9 @@ on:
       - '.github/workflows/generate.yml'
       - 'workflows/scripts/gen-family.js'
       - 'workflows/scripts/gen-faq.js'
+      - '.template.html'
+      - 'family.template.html'
       - 'family.yaml'
-      - 'family.html'
       - 'faq/**/*.md'
       - 'faq/.template.html'
 
@@ -49,6 +51,6 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         test -z "$(git status --porcelain)" && exit 0
-        git add *.html faq/*.html
+        git add docs/*.html docs/faq/*.html
         git commit -m 'Generate Family and FAQ HTML'
         git push

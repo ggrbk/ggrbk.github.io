@@ -9,6 +9,8 @@ const converter = new showdown.Converter();
 const template = fs.readFileSync('faq/.template.html', 'utf8');
 
 const faqDir = 'faq';
+const outputDir = path.join('docs', faqDir);
+fs.mkdirSync(outputDir, { recursive: true });
 const files = fs.readdirSync(faqDir);
 
 let listHtml = `\
@@ -52,7 +54,7 @@ files.forEach(file => {
       .replace(/<ul>[\n ]+<\/ul>/, `\n${formattedHtmlContent}`)
       .replaceAll(/^ +/gm, '')
       .replaceAll('\n', '');
-    const htmlFilePath = path.join(faqDir, file.replace('.md', '.html'));
+    const htmlFilePath = path.join(outputDir, file.replace('.md', '.html'));
     fs.writeFileSync(htmlFilePath, finalHtml);
 
     listHtml += `
@@ -77,5 +79,5 @@ listHtml += `
 `;
 listHtml = listHtml.replaceAll(/^ +/gm, '').replaceAll('\n', '');
 
-fs.writeFileSync(path.join(faqDir, 'list.html'), listHtml);
-console.log('Generated faq/list.html');
+fs.writeFileSync(path.join(outputDir, 'list.html'), listHtml);
+console.log('Generated docs/faq/list.html');

@@ -13,4 +13,4 @@ npm install
 npm run build
 ```
 
-テンプレートは `.template.html`、`family.template.html`、`faq/.template.html` を編集してください。生成されるHTMLは帯域削減のため空白を削除して出力されます。
+テンプレートは `.template.html`、`family.template.html`、`faq/.template.html` を編集してください。生成されるHTMLは帯域削減のため空白を削除して出力され、`docs/` 配下に配置されます。
