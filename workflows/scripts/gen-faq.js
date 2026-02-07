@@ -47,12 +47,13 @@ files.forEach(file => {
       return;
     }
     const htmlContent = converter.makeHtml(markdown).replace(
-      /<h([1-6])\s+id(?:="([^"]*)")?\s*>/g,
-      (match, level, idValue = '') => (
-        idValue.trim() === '' ? `<h${level}>` : `<h${level} id="${idValue}">`
+      /<h([1-6])(\s+id(?:="([^"]*)")?)?\s*>/g,
+      (match, level, idAttr, idValue = '') => (
+        idAttr && idValue.trim() !== '' ? `<h${level} id="${idValue}">` : `<h${level}>`
       )
     );
     const formattedHtmlContent = format(htmlContent, "  ")
+      // html-format may split <a> tags; normalize before minifying.
       .replace(/<a\s+href=/g, '<a href=')
       .replace(/^/gm, "  ");
     const finalHtml = template
