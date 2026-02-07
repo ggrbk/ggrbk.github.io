@@ -2,14 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const showdown = require('showdown');
 const yaml = require('js-yaml');
-const format = require('html-format');
 
-const converter = new showdown.Converter();
+const converter = new showdown.Converter({ noHeaderId: true });
 
 const template = fs.readFileSync('faq/.template.html', 'utf8');
 
-const faqDir = 'faq';
-const files = fs.readdirSync(faqDir);
+const faqSourceDir = 'faq';
+const outputDir = path.join('docs', faqSourceDir);
+fs.mkdirSync(outputDir, { recursive: true });
+const files = fs.readdirSync(faqSourceDir);
 
 let listHtml = `\
 <!DOCTYPE html>
@@ -32,7 +33,7 @@ let listHtml = `\
 
 files.forEach(file => {
   if (path.extname(file) === '.md') {
-    const filePath = path.join(faqDir, file);
+    const filePath = path.join(faqSourceDir, file);
     const content = fs.readFileSync(filePath, 'utf8');
     const [metadata, markdown] = content.split('---\n').slice(1);
     const meta = yaml.load(metadata);
@@ -45,14 +46,14 @@ files.forEach(file => {
       return;
     }
     const htmlContent = converter.makeHtml(markdown);
-    const formattedHtmlContent = format(htmlContent, "  ").replace(/^/gm, "  ");
+    const formattedHtmlContent = htmlContent.replace(/^/gm, "  ");
     const finalHtml = template
       .replace('<h2>テンプレート</h2>\n', '')
       .replace('<meta property="og:description" content="テンプレート">', `<meta property="og:description" content="${meta.description}">`)
       .replace(/<ul>[\n ]+<\/ul>/, `\n${formattedHtmlContent}`)
       .replaceAll(/^ +/gm, '')
       .replaceAll('\n', '');
-    const htmlFilePath = path.join(faqDir, file.replace('.md', '.html'));
+    const htmlFilePath = path.join(outputDir, file.replace('.md', '.html'));
     fs.writeFileSync(htmlFilePath, finalHtml);
 
     listHtml += `
@@ -77,5 +78,5 @@ listHtml += `
 `;
 listHtml = listHtml.replaceAll(/^ +/gm, '').replaceAll('\n', '');
 
-fs.writeFileSync(path.join(faqDir, 'list.html'), listHtml);
-console.log('Generated faq/list.html');
+fs.writeFileSync(path.join(outputDir, 'list.html'), listHtml);
+console.log('Generated docs/faq/list.html');

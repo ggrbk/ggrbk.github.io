@@ -1,9 +1,13 @@
 const fs = require('fs');
+const path = require('path');
 const yaml = require('js-yaml');
 
 const minifyHtml = (html) => html.replaceAll(/^ +/gm, '').replaceAll('\n', '');
 const redirectTemplate = fs.readFileSync('.template.html', 'utf8');
 const familyTemplate = fs.readFileSync('family.template.html', 'utf8');
+
+const outputDir = 'docs';
+fs.mkdirSync(outputDir, { recursive: true });
 
 const familyYaml = fs.readFileSync('family.yaml', 'utf8');
 const familyData = yaml.load(familyYaml);
@@ -12,7 +16,7 @@ Object.entries(familyData).forEach(([key, value]) => {
   const htmlContent = minifyHtml(
     redirectTemplate.replace('DESCRIPTION_PLACEHOLDER', value)
   );
-  fs.writeFileSync(`${key}.html`, htmlContent);
+  fs.writeFileSync(path.join(outputDir, `${key}.html`), htmlContent);
   console.log(`Generated ${key}.html with description: ${value}`);
 });
 
@@ -35,5 +39,5 @@ Object.entries(familyData).forEach(([key, value]) => {
 const familyHtmlContent = minifyHtml(
   familyTemplate.replace('LIST_ITEMS_PLACEHOLDER', listItems.join(''))
 );
-fs.writeFileSync('family.html', familyHtmlContent);
+fs.writeFileSync(path.join(outputDir, 'family.html'), familyHtmlContent);
 console.log('Generated family.html');
