@@ -39,11 +39,8 @@ jobs:
     - name: Install dependencies
       run: npm install
     
-    - name: Generate Family HTML and push changes
-      run: node workflows/scripts/gen-family.js
-    
-    - name: Generate FAQ HTML and push changes
-      run: node workflows/scripts/gen-faq.js
+    - name: Generate HTML
+      run: npm run build
 
     - name: Commit and push changes
       env:
