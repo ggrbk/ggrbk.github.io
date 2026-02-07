@@ -10,30 +10,30 @@ const familyData = yaml.load(familyYaml);
 
 Object.entries(familyData).forEach(([key, value]) => {
   const htmlContent = minifyHtml(
-    redirectTemplate.replaceAll('DESCRIPTION_PLACEHOLDER', value)
+    redirectTemplate.replace('DESCRIPTION_PLACEHOLDER', value)
   );
   fs.writeFileSync(`${key}.html`, htmlContent);
   console.log(`Generated ${key}.html with description: ${value}`);
 });
 
-let listItems = `
+const listItems = [`
       <li>
         <a href="/">/</a>
         <ul><li>自分で調べることはとても重要です。人に聞く前に一度検索してみやがれください。</li></ul>
       </li>
-`;
+`];
 
 Object.entries(familyData).forEach(([key, value]) => {
-  listItems += `
+  listItems.push(`
       <li>
         <a href="${key}">${key}</a>
         <ul><li>${value}</li></ul>
       </li>
-  `;
+  `);
 });
 
 const familyHtmlContent = minifyHtml(
-  familyTemplate.replace('LIST_ITEMS_PLACEHOLDER', listItems)
+  familyTemplate.replace('LIST_ITEMS_PLACEHOLDER', listItems.join(''))
 );
 fs.writeFileSync('family.html', familyHtmlContent);
 console.log('Generated family.html');
