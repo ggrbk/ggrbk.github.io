@@ -1,4 +1,4 @@
-const encodeHash = (hash) => hash.replace(/&/g, "%26").replace(/#/, "%23").replace(/ /g, "+");
+const encodeHash = (hash) => hash.replace(/&/g, "%26").replace(/#/g, "%23").replace(/ /g, "+");
 const applyHash = (hash) => {
   hash = encodeHash(hash);
   const urls = {
